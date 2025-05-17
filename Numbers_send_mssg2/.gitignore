@@ -1,0 +1,9 @@
+Numbers_send_mssg2/puppeteer_data/
+Numbers_send_mssg2/node_modules/
+Numbers_send_mssg2/sessions/
+*.exe
+*.dll
+*.zip
+*.rar
+*.7z
+*.iso
