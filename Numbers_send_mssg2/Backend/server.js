@@ -107,7 +107,7 @@ app.use(cors());
 app.use(express.json());
 
 const upload = multer({ dest: 'uploads/' });
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, '../public')))
 const clients = new Map(); // userId => client info { client, numbers, message, qrSent }
 
 function generateUserId() {
@@ -116,7 +116,7 @@ function generateUserId() {
 
 app.post('/start-session', upload.single('file'), async (req, res) => {
   try {
-    console.log("start-session called");
+    
     const { message } = req.body;
     if (!message) return res.status(400).json({ error: 'Message requis' });
     if (!req.file) return res.status(400).json({ error: 'Fichier Excel requis' });
@@ -183,8 +183,8 @@ app.post('/start-session', upload.single('file'), async (req, res) => {
     res.status(500).json({ error: 'Erreur serveur' });
   }
 });
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`✅ Serveur lancé sur le port ${PORT}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Serveur lancé sur le port http://localhost:${PORT}`);
 });
 

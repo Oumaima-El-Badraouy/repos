@@ -303,7 +303,7 @@ form.addEventListener('submit', async (e) => {
   formData.append('message', message);
 
   try {
-    const response = await fetch('http://localhost:8080/start-session', {
+    const response = await fetch('http://localhost:3000/start-session', {
       method: 'POST',
       body: formData
     });
@@ -327,9 +327,8 @@ form.addEventListener('submit', async (e) => {
       QRCode.toCanvas(qrCanvas, data.qr, { width: 250 });
       qrCanvas.style.opacity = 1;
     } else if (data.status === 'done') {
-      showCustomAlert('Messages envoyés avec succès !');
-      qrStatus.textContent = '';
-      qrCanvas.style.opacity = 0;
+      qrStatus.textContent = 'Messages envoyés avec succès !';
+   
     }
 
   } catch (e) {
