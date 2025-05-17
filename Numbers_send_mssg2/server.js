@@ -116,6 +116,7 @@ function generateUserId() {
 
 app.post('/start-session', upload.single('file'), async (req, res) => {
   try {
+    console.log("start-session called");
     const { message } = req.body;
     if (!message) return res.status(400).json({ error: 'Message requis' });
     if (!req.file) return res.status(400).json({ error: 'Fichier Excel requis' });
