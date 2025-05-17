@@ -258,6 +258,7 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <script>
   // Fonction pour afficher l'alerte personnalisée
+// Fonction pour afficher l'alerte personnalisée
 function showCustomAlert(message) {
   const alertBox = document.getElementById('custom-alert');
   const alertMessage = document.getElementById('alert-message');
@@ -270,73 +271,73 @@ document.getElementById('alert-close').addEventListener('click', () => {
   document.getElementById('custom-alert').classList.add('hidden');
 });
 
-  const form = document.getElementById('form');
-  const status = document.getElementById('status');
-  const qrCanvas = document.getElementById('qr');
-  const qrStatus = document.getElementById('qr-status');
-  const loader = document.getElementById('loader');
+const form = document.getElementById('form');
+const status = document.getElementById('status');
+const qrCanvas = document.getElementById('qr');
+const qrStatus = document.getElementById('qr-status');
+const loader = document.getElementById('loader');
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-    const fileInput = document.getElementById('file');
-    const message = document.getElementById('message').value.trim();
+  const fileInput = document.getElementById('file');
+  const message = document.getElementById('message').value.trim();
 
-    if (!fileInput.files.length) {
-      alert('Veuillez sélectionner un fichier Excel.');
-      return;
-    }
-    if (!message) {
-      alert('Veuillez saisir un message.');
-      return;
-    }
+  if (!fileInput.files.length) {
+    showCustomAlert('Veuillez sélectionner un fichier Excel.');
+    return;
+  }
+  if (!message) {
+    showCustomAlert('Veuillez saisir un message.');
+    return;
+  }
 
-    // Afficher loader
-    loader.classList.add('show');
-    status.textContent = 'Upload du fichier et démarrage de la session...';
-    qrStatus.textContent = '';
-    qrCanvas.style.opacity = 0;
-
-    const formData = new FormData();
-    formData.append('file', fileInput.files[0]);
-    formData.append('message', message);
-
-    try {
-      const response = await fetch('http://localhost:3000/start-session', {
-        method: 'POST',
-        body: formData
-      });
-
-      loader.classList.remove('show');
-
-      if (!response.ok) {
-        const err = await response.json();
-        status.textContent = 'Erreur: ' + (err.error || 'Serveur indisponible');
-        qrCanvas.style.opacity = 0;
-        qrStatus.textContent = '';
-        return;
-      }
-
-      const data = await response.json();
-
-      if (data.status === 'qr') {
-        status.textContent = 'Scanne ce QR Code dans WhatsApp Web (tu as 1 minute)';
-        qrStatus.textContent = 'QR Code à scanner';
-        QRCode.toCanvas(qrCanvas, data.qr, { width: 250 });
-        qrCanvas.style.opacity = 1;
-      } else if (data.status === 'done') {
-       showCustomAlert('Messages envoyés avec succès !');
+  // Afficher loader
+  loader.classList.add('show');
+  status.textContent = 'Upload du fichier et démarrage de la session...';
   qrStatus.textContent = '';
   qrCanvas.style.opacity = 0;
-      }
 
-    } catch (e) {
-      loader.classList.remove('show');
-      showCustomAlert ('Erreur: ' + e.message);
+  const formData = new FormData();
+  formData.append('file', fileInput.files[0]);
+  formData.append('message', message);
+
+  try {
+    const response = await fetch('http://localhost:3000/start-session', {
+      method: 'POST',
+      body: formData
+    });
+
+    loader.classList.remove('show');
+
+    if (!response.ok) {
+      const err = await response.json();
+      status.textContent = 'Erreur: ' + (err.error || 'Serveur indisponible');
+      qrCanvas.style.opacity = 0;
+      qrStatus.textContent = '';
+      showCustomAlert('Erreur: ' + (err.error || 'Serveur indisponible'));
+      return;
+    }
+
+    const data = await response.json();
+
+    if (data.status === 'qr') {
+      status.textContent = 'Scanne ce QR Code dans WhatsApp Web (tu as 1 minute)';
+      qrStatus.textContent = 'QR Code à scanner';
+      QRCode.toCanvas(qrCanvas, data.qr, { width: 250 });
+      qrCanvas.style.opacity = 1;
+    } else if (data.status === 'done') {
+      showCustomAlert('Messages envoyés avec succès !');
       qrStatus.textContent = '';
       qrCanvas.style.opacity = 0;
     }
-  });
+
+  } catch (e) {
+    loader.classList.remove('show');
+    showCustomAlert('Erreur réseau ou serveur: ' + e.message);
+  }
+});
+
 </script>
 
 </body>
